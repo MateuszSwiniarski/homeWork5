@@ -691,4 +691,5 @@ public class Rates {
         this.additionalProperties.put(name, value);
     }
 
+
 }

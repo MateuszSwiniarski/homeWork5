@@ -6,35 +6,92 @@ import com.rodzyn.homework5.model.currency.Rates;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 @Service
 public class CurrencyService {
 
+    private int numberOFattempt;
+
+    public int getNumberOFattempt() {
+        return numberOFattempt;
+    }
+
+    public void setNumberOFattempt(int numberOFattempt) {
+        this.numberOFattempt = numberOFattempt;
+    }
+
+    public List<String> selectCurrency = new ArrayList<>();
+
+    private String basicCurrency = "pln";
+
+    public String getBasicCurrency() {
+        return basicCurrency;
+    }
+
+    private double rate = 0d;
+
+    public CurrencyService(double rate) {
+        this.rate = rate;
+    }
+
+    public double getRate() {
+        return rate;
+    }
+
+    public void setRate(double rate) {
+        this.rate = rate;
+    }
+
+    /*
+    create comment to game
+     */
+    public String rateComment(){
+        Object rateCurrency = mapCurrency().get(selectCurrency.get(0));
+        String str = rateCurrency.toString();
+        double rateCur = Double.valueOf(str).doubleValue() *100;
+        rateCur = Math.round(rateCur);
+        rateCur = rateCur/100;
+        setNumberOFattempt(getNumberOFattempt()+1);
+        if(rateCur > getRate()){
+            return "your number is too small";
+        }else if(rateCur < getRate()){
+            return "your number is too big";
+        }
+        return "you win";
+    }
+
+    /*
+    get all needed date from URL
+     */
     public Currency currency(){
         RestTemplate restTemplate = new RestTemplate();
-        Currency currency = restTemplate.getForObject("https://api.exchangerate-api.com/v4/latest/usd", Currency.class);
+        Currency currency = restTemplate.getForObject(String.format(
+                "https://api.exchangerate-api.com/v4/latest/%s", basicCurrency)
+                , Currency.class);
         return currency;
     }
 
+    /*
+    select random currency
+     */
     public CurrencyService() {
-
-        Map<String, Object> map = new TreeMap<>();
-        Rates rates = currency().getRates();
-        map.putIfAbsent("USD", rates.getUSD());
-        map.putIfAbsent("AED", rates.getAED());
-        System.out.println(map.keySet());
-        System.out.println(map.get("USD"));
-
-        System.out.println(mapCurrency().keySet());
-        System.out.println(mapCurrency().get("PLN"));
-        System.out.println(mapCurrency().get("JPY"));
-        System.out.println(mapCurrency().get("GBP"));
-        System.out.println(mapCurrency().get("AED"));
+        Random random = new Random();
+        int ranNumber = random.nextInt(51);
+        selectCurrency.add(listCurrency().get(ranNumber));
     }
 
+    /*
+    create list of all symbol currency
+     */
+    public List<String> listCurrency(){
+        List<String> listCurrency = new ArrayList<>(mapCurrency().keySet());
+        return listCurrency;
+    }
+
+    /*
+    create map with symbol currency as key, and rate as value
+     */
     public Map<String, Object> mapCurrency(){
         Map<String, Object> mapCurrency = new TreeMap<>();
         Rates rates = currency().getRates();

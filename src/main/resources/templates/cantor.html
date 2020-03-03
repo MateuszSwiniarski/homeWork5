@@ -9,12 +9,27 @@
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 <body>
-
-<p>cantor will be implement soon</p>
-
+<h2>Currency rate</h2>
+<br>
 
 <div>
-    <a href="http://localhost:8080/api" class="btn btn-secondary btn-lg btn-block" role="button" aria-pressed="true">Primary link</a>
+    <a>     Guess the course for 1 </a><a th:text="${basicCurrency}"></a><br>
+    <a>     in </a><a th:text="${randomCurrency}"></a><br>
+    <a>     hint: Enter the whole number or number with 2 decimal</a>
+    <form th:action="@{/api/cantor}" th:object="${rate}" method="post">
+        <p><input type="text" th:field="*{rate}" placeholder="Enter rate" /></p>
+        <p><input type="submit" value="Confirm"></p>
+    </form>
+    <a th:text="${comment}"></a><br>
+    <a> attempt: </a><a th:text="${attempt}"></a>
+</div>
+
+
+<br>
+<br>
+<br>
+<div>
+    <a href="http://localhost:8080/api" class="btn btn-secondary btn-lg btn-block" role="button" aria-pressed="true">Back to menu</a>
 </div>
 
 </body>
